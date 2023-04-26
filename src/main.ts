@@ -5,7 +5,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function start() {
   const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('api')
+  //app.setGlobalPrefix('api')
   const PORT = process.env.PORT || 5000
   app.useGlobalPipes(new ValidationPipe());
 

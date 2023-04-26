@@ -78,6 +78,7 @@ export class UsersService {
         return user
     }
 
+    // TODO
     async toggleFavorite(id: number, movieId: number) {
         const user = await this.findOne(id)
         const movie = await this.movieService.findOne(movieId)

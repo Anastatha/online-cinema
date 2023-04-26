@@ -113,55 +113,6 @@ export class MovieService {
       return {ok: true}
     }
   }
-  // async transactionCreateMovie(createMovieDto: CreateMovieDto) {
-  //   const queryRunner = this.connection.createQueryRunner();
-  //   await queryRunner.connect();
-  //   await queryRunner.startTransaction();
-  //   try {
-  //     const movie = await this.movieRepo.create(createMovieDto)
-  //     movie.actor = []
-  //     if(createMovieDto.actorIds) {
-  //       for(let i = 0; i < createMovieDto.actorIds.length; i++) {
-  //         let act = await this.actorServer.findOne(createMovieDto.actorIds[i])
-  //         if(act) {
-  //           movie.actor.push(act)
-  //         } 
-  //       }
-  //     }
-  //     if(createMovieDto.actorName) {
-  //       let act = await this.actorServer.createActor({name: createMovieDto.actorName})
-  //       movie.actor.push(act)
-  //     }
-
-  //     if(createMovieDto.genreIds) {
-  //       movie.genre = []
-  //       for(let i = 0; i < createMovieDto.genreIds.length; i++) {
-  //         let gen = await this.genresServer.findOne(createMovieDto.genreIds[i])
-  //         if (gen) {
-  //           movie.genre.push(gen)
-  //         }
-  //       }
-  //     }
-  //     if(createMovieDto.genreName) {
-  //       let gen = await this.genresServer.createGenre({name: createMovieDto.genreName})
-  //       movie.genre.push(gen)
-  //     }
-  //     await queryRunner.manager.save(movie)
-  //     await this.ratingServer.create(movie.id, 0) 
-  //     await queryRunner.commitTransaction();
-  //     return movie;
-  //   } catch(err) {
-  //     await queryRunner.rollbackTransaction();
-  //     const error: any = {
-  //       status: false,
-  //       error: err.message,
-  //     };
-  //     return error
-  //   } finally {
-  //     await queryRunner.release()
-  //     return {ok: true}
-  //   }
-  // }
 
   async findAll() {
     const movies = await this.movieRepo.find({relations: ['actor', 'genre']})
@@ -190,7 +141,6 @@ export class MovieService {
     })
     return movies
   }
-//return this.userRepo.createQueryBuilder('UserEntity').leftJoinAndSelect('UserEntity.role', 'role').where('UserEntity.id = :userId',{userId: id}).getOne()
 
   async findByGenre(genreId: number) {
     const movie = this.movieRepo.find({
@@ -259,47 +209,6 @@ export class MovieService {
     })
     return movieOpened
   }
-
-  // async generarPDF(): Promise<Buffer>
-  // {
-  //     const pdfBuffer: Buffer = await new Promise( async resolve => {
-  //       const doc =  new PDFDocument(
-  //         {
-  //           size: "LETTER",
-  //           bufferPages: true
-  //         })
-  //         //todo
-  //         doc.text('Total cound opened', { align: 'center'})
-  //         const tableJson = { 
-  //           "headers": [
-  //             // { "label":"Id", "property":"id", "width":50 },
-  //             { "label":"Title", "property":"title", "width":150 },
-  //             { "label":"countOpened", "property":"coundOpened", "width":70 }
-  //           ],
-  //           "datas": await this.totalCoundOpened(),
-  //           "options": {
-  //             "width": 300,
-  //             "y": 100,
-  //             "x": 200,
-  //             padding: 5,
-  //             divider: {
-  //               header: { disabled: false, width: 2, opacity: 1 },
-  //               horizontal: { disabled: false, width: 0.5, opacity: 0.5 },
-  //             },
-  //           }
-  //         };
-  //         doc.table(tableJson);
-
-  //         const buffer = []
-  //         doc.on('data', buffer.push.bind(buffer))
-  //         doc.on('end', () => {
-  //             const data = Buffer.concat(buffer)
-  //             resolve(data)
-  //         })
-  //         doc.end()
-  //     })
-  //     return pdfBuffer;
-  // }
 
   async movieRatingByGenre(genreId: number) {
     const movie = await this.movieRepo.find({
