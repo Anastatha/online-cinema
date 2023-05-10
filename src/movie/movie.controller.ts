@@ -1,20 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
-
-// import { Controller, Get, Post, UseInterceptors, UploadedFiles, Body, Param, Res } from '@nestjs/common';
-import { AnyFilesInterceptor } from '@nestjs/platform-express';
-// import { AppService } from './app.service';
-import { diskStorage } from 'multer';
-import path = require('path');
-import { Observable, of } from 'rxjs';
-import { join } from 'path';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Roles } from 'src/auth/roles-auth.decorator';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 @Controller('movie')
 export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 
+  @Roles("ADMIN")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createMovieDto: CreateMovieDto) {
     return this.movieService.create(createMovieDto);
@@ -25,27 +23,18 @@ export class MovieController {
     return this.movieService.findAll();
   }
 
-  // @Get("pdf/download")
-  // async downloadPDF(@Res() res): Promise<void> {
-  //   const buffer = await this.movieService.generarPDF();
-
-  //   res.set({
-  //     'Content-Type': 'application/pdf',
-  //     'Content-Disposition': 'attachment; filename=example.pdf',
-  //     'Content-Length': buffer.length,
-  //   })
-  //   res.end(buffer);
-  // }
-
+  @Roles("ADMIN")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('/othetOne')
   totalCoundOpened() {
     return this.movieService.totalCoundOpened()
   }
 
-  @Post('/tran')
-  tran(@Body() createMovieDto: CreateMovieDto) {
-    return this.movieService.transactionCreateMovie(createMovieDto)
-  }
+  // @Post('/tran')
+  // tran(@Body() createMovieDto: CreateMovieDto) {
+  //   return this.movieService.transactionCreateMovie(createMovieDto)
+  // }
 
   @Get('/opened')
   findByOpened() {
@@ -57,6 +46,11 @@ export class MovieController {
     return this.movieService.getAll(searchTerm);
   }
 
+  @Get('/new')
+  NewMovie() {
+    return this.movieService.newMovie()
+  }
+  
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.movieService.findOne(+id);
@@ -82,11 +76,17 @@ export class MovieController {
     return this.movieService.findByGenre(genreId)
   }
 
+  @Roles("ADMIN")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch('/update/:id')
   update(@Param('id') id: number, @Body() updateMovieDto: UpdateMovieDto) {
     return this.movieService.update(id, updateMovieDto);
   }
 
+  @Roles("ADMIN")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.movieService.remove(+id);

@@ -1,29 +1,29 @@
-import {IsString } from "class-validator"
+import {IsNumber, IsString } from "class-validator"
 
 export class CreateMovieDto {
     @IsString()
     title: string
 
     @IsString()
-    description?:string
+    description:string
     
-    poster?:string
+    @IsString()
+    poster:string
 
-    video?:string
+    video:string
     
-    coundOpened?: number
+    coundOpened: number
     
-    yers?:number
+    @IsNumber()
+    yers:number
     
-    duration?: number
+    @IsNumber()
+    duration: number
     
-    country?: string
+    @IsString()
+    country: string
 
-    actorIds?: number []
+    actorIds: number []
 
-    genreIds?: number []
-
-    actorName?: string
-    
-    genreName?: string
+    genreIds: number []
 }

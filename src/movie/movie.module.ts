@@ -13,9 +13,10 @@ import { RatingModule } from 'src/rating/rating.module';
 import { FileModule } from 'src/file/file.module';
 import { CommentEntity } from 'src/comments/entities/comment.entity';
 import { CommentsModule } from 'src/comments/comments.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MovieEntity, UserEntity, GenreEntity, ActorEntity, RatingEntity, CommentEntity]), GenreModule, FileModule, ActorModule,  forwardRef(() => RatingModule), forwardRef(()=> CommentsModule)],
+  imports: [TypeOrmModule.forFeature([MovieEntity, UserEntity, GenreEntity, ActorEntity, RatingEntity, CommentEntity]), GenreModule, FileModule, ActorModule,  forwardRef(() => RatingModule), forwardRef(()=> CommentsModule), forwardRef(() => AuthModule)],
   controllers: [MovieController],
   providers: [MovieService],
   exports: [MovieService]

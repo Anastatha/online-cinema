@@ -11,7 +11,7 @@ import { AuthService } from './auth.service';
     forwardRef(() => UsersModule),
     JwtModule.register({
       secret: process.env.PRIVATE_KEY || 'SECRET',
-      signOptions: {//время жизни токена
+      signOptions: {
         expiresIn: '24h'
       }
     })

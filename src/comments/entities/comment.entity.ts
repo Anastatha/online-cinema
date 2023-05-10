@@ -7,7 +7,7 @@ export class CommentEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column({name: "value"})
+	@Column()
 	value: string;
 
 	@Column()

@@ -36,10 +36,9 @@ export class RatingService {
       } else {
         const newRUser = await this.ratingRepo.create({userId: userId, movieId: movieId, value: value})
         await this.ratingRepo.save(newRUser)
-
-        const averageRating = await this.averageRatingbyMovie(movieId)
-        await this.movie.updateRating(movieId, averageRating)
       }
+      const averageRating = await this.averageRatingbyMovie(movieId)
+      await this.movie.updateRating(movieId, averageRating)
     }
     
     return rating

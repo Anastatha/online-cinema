@@ -16,25 +16,25 @@ export class MovieEntity {
     @Column({default: 0})
     ratings: number
 
-	@Column({nullable: true})
+	@Column()
 	description: string;
 
-    @Column({nullable: true})
+    @Column()
     poster: string
 
     @Column({nullable:true})
     video: string
 
-    @Column({default: 0, nullable: true})
+    @Column({default: 0})
     coundOpened: number
 
-    @Column({nullable: true})
+    @Column()
     yers: number
 
-    @Column({nullable: true})
+    @Column()
     duration: number
 
-    @Column({nullable: true})
+    @Column()
     country: string
     
 	@CreateDateColumn({name: 'created_at'})

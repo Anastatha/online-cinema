@@ -6,19 +6,19 @@ export class ActorEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column({name: 'name'})
+	@Column()
 	name: string;
 
-	@Column({name: 'description', nullable: true})
+	@Column()
 	description: string;
 
-    @Column({name: 'poster', nullable: true})
+    @Column()
     poster: string
 
-	@Column({name: "dataBirth", nullable: true})
+	@Column()
 	dataBirth: Date
 
-	@Column({name: "placeBirth", nullable: true})
+	@Column()
 	placeBirth: string
     
 	@CreateDateColumn({name: 'created_at'})

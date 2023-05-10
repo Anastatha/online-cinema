@@ -70,25 +70,18 @@ export class UsersService {
         if(dto.name)
             user.name = dto.name
         
-        const role = await this.roleService.getRoleByValu(dto.value)
-        if(!user.role.includes(role)) 
-            user.role.push(role)
-        
         await this.userRepo.save(user)
         return user
     }
 
-    // TODO
     async toggleFavorite(id: number, movieId: number) {
         const user = await this.findOne(id)
         const movie = await this.movieService.findOne(movieId)
-        
-        if(!user.favorites.includes(movie)) {
-            console.log('1')
+
+        if(!user.favorites.some(e =>  e.id == movie.id)) {
             user.favorites.push(movie)
         } else {
-            console.log('2')
-            user.favorites.filter((id) => id !== movie)
+            user.favorites = user.favorites.filter((e => e.id != movie.id))
         }
         return this.userRepo.save(user)
     }

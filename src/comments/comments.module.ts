@@ -7,9 +7,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from 'src/users/users.module';
 import { MovieModule } from 'src/movie/movie.module';
 import { CommentEntity } from './entities/comment.entity';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity, MovieEntity, CommentEntity]),  forwardRef(()=> UsersModule), forwardRef(()=> MovieModule)],
+  imports: [TypeOrmModule.forFeature([UserEntity, MovieEntity, CommentEntity]),  forwardRef(()=> UsersModule), forwardRef(()=> MovieModule), forwardRef(() => AuthModule)],
   controllers: [CommentsController],
   providers: [CommentsService],
   exports: [CommentsService]

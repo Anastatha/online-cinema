@@ -1,4 +1,3 @@
-import { ApiProperty } from "@nestjs/swagger";
 import { CommentEntity } from "src/comments/entities/comment.entity";
 import { MovieEntity } from "src/movie/entities/movie.entity";
 import { RatingEntity } from "src/rating/entities/rating.entity";
@@ -7,7 +6,6 @@ import {Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, Prim
 
 @Entity({name: 'user'})
 export class UserEntity {
-	@ApiProperty({example: 1, description: 'Уникальный индентификатор'})
 	@PrimaryGeneratedColumn()
 	id: number;
 
@@ -34,7 +32,7 @@ export class UserEntity {
 	@JoinTable()
 	favorites: MovieEntity[]
 
-	@OneToMany(()=>RatingEntity, ratingEntity=>ratingEntity.user, {onUpdate: "CASCADE"})
+	@OneToMany(()=>RatingEntity, ratingEntity => ratingEntity.user)
 	rating: RatingEntity[]
 
 	@OneToMany(() => CommentEntity, commentEntity => commentEntity.user)

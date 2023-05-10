@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { GenreEntity } from './entities/genre.entity';
 
@@ -16,13 +16,6 @@ export class GenreService {
   async getAll() {
     const genre = await this.genreRepo.find()
     return genre
-  }
-
-  async findAll(searchTerm?: string) {
-    const loadedGenre = await this.genreRepo.findBy({
-      name: ILike(`${searchTerm}%`)
-    })
-    return loadedGenre
   }
 
   async findOne(id: number) {

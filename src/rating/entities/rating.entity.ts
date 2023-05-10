@@ -1,4 +1,3 @@
-import { MovieEntity } from "src/movie/entities/movie.entity";
 import { UserEntity } from "src/users/user.entity";
 import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 

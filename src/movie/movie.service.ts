@@ -10,9 +10,6 @@ import { MovieEntity } from './entities/movie.entity';
 import { FileService } from 'src/file/file.service';
 import { CommentsService } from 'src/comments/comments.service';
 
-// import { resolve } from 'path';
-// const PDFDocument = require('pdfkit-table');
-
 @Injectable()
 export class MovieService {
   constructor(@InjectRepository(MovieEntity) private movieRepo: Repository<MovieEntity>,
@@ -29,90 +26,75 @@ export class MovieService {
 
   async create(createMovieDto: CreateMovieDto) {
     const movie = await this.movieRepo.create(createMovieDto)
-    // createMovieDto.actorIds.forEach(e => console.log(e))
 
     movie.actor = []
     if(createMovieDto.actorIds) {
       for(let i = 0; i < createMovieDto.actorIds.length; i++) {
-        let act = await this.actorServer.findOne(createMovieDto.actorIds[i])
-        if(act) {
-          movie.actor.push(act)
+        let newActor = await this.actorServer.findOne(createMovieDto.actorIds[i])
+        if(newActor) {
+          movie.actor.push(newActor)
         } 
       }
-    }
-    if(createMovieDto.actorName) {//для массива
-      let act = await this.actorServer.createActor({name: createMovieDto.actorName})
-      movie.actor.push(act)
     }
 
     if(createMovieDto.genreIds) {
       movie.genre = []
       for(let i = 0; i < createMovieDto.genreIds.length; i++) {
-        let gen = await this.genresServer.findOne(createMovieDto.genreIds[i])
-        if (gen) {
-          movie.genre.push(gen)
+        let newGenre = await this.genresServer.findOne(createMovieDto.genreIds[i])
+        if (newGenre) {
+          movie.genre.push(newGenre)
         }
       }
     }
-    if(createMovieDto.genreName) {
-      let gen = await this.genresServer.createGenre({name: createMovieDto.genreName})
-      movie.genre.push(gen)
-    }
+
     await this.movieRepo.save(movie)
     await this.ratingServer.create(movie.id, 0) 
     return movie;
   }
 
 //transaction 
-  async transactionCreateMovie(createMovieDto: CreateMovieDto) {
-    const queryRunner = this.dataSource.createQueryRunner()
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    try {
-      const movie = await this.movieRepo.create(createMovieDto)
-      movie.actor = []
-      if(createMovieDto.actorIds) {
-        for(let i = 0; i < createMovieDto.actorIds.length; i++) {
-          let act = await this.actorServer.findOne(createMovieDto.actorIds[i])
-          if(act) {
-            movie.actor.push(act)
-          } 
-        }
-      }
-      if(createMovieDto.actorName) {
-        let act = await this.actorServer.createActor({name: createMovieDto.actorName})
-        movie.actor.push(act)
-      }
+  // async transactionCreateMovie(createMovieDto: CreateMovieDto) {
+  //   const queryRunner = this.dataSource.createQueryRunner()
+  //   await queryRunner.connect();
+  //   await queryRunner.startTransaction();
+  //   try {
+  //     const movie = await this.movieRepo.create(createMovieDto)
+  //     movie.actor = []
+  //     if(createMovieDto.actorIds) {
+  //       for(let i = 0; i < createMovieDto.actorIds.length; i++) {
+  //         let act = await this.actorServer.findOne(createMovieDto.actorIds[i])
+  //         if(act) {
+  //           movie.actor.push(act)
+  //         } 
+  //       }
+  //     }
 
-      if(createMovieDto.genreIds) {
-        movie.genre = []
-        for(let i = 0; i < createMovieDto.genreIds.length; i++) {
-          let gen = await this.genresServer.findOne(createMovieDto.genreIds[i])
-          if (gen) {
-            movie.genre.push(gen)
-          }
-        }
-      }
-      if(createMovieDto.genreName) {
-        let gen = await this.genresServer.createGenre({name: createMovieDto.genreName})
-        movie.genre.push(gen)
-      }
-      await queryRunner.manager.save(movie)
-      await this.ratingServer.create(movie.id, 0) 
-      await queryRunner.commitTransaction();
-      return movie;
-    } catch(err) {
-      await queryRunner.rollbackTransaction();
-      const error: any = {
-        status: false,
-        error: err.message,
-      };
-      return error
-    } finally {
-      await queryRunner.release()
-      return {ok: true}
-    }
-  }
+  //     if(createMovieDto.genreIds) {
+  //       movie.genre = []
+  //       for(let i = 0; i < createMovieDto.genreIds.length; i++) {
+  //         let gen = await this.genresServer.findOne(createMovieDto.genreIds[i])
+  //         if (gen) {
+  //           movie.genre.push(gen)
+  //         }
+  //       }
+  //     }
+
+  //     await queryRunner.manager.save(movie)
+  //     await this.ratingServer.create(movie.id, 0) 
+  //     await queryRunner.commitTransaction();
+  //     return movie;
+  //   } catch(err) {
+  //     await queryRunner.rollbackTransaction();
+  //     const error: any = {
+  //       status: false,
+  //       error: err.message,
+  //     };
+  //     return error
+  //   } finally {
+  //     await queryRunner.release()
+  //     return {ok: true}
+  //   }
+  // }
 
   async findAll() {
     const movies = await this.movieRepo.find({relations: ['actor', 'genre']})
@@ -171,25 +153,8 @@ export class MovieService {
       throw new NotFoundException(`Movie with ${id} not found`)
     }
 
-    if(updateMovieDto.actorIds) {
-      for(let i = 0; i < updateMovieDto.actorIds.length; i++) {
-        let actorId = await this.actorServer.findOne(updateMovieDto.actorIds[i])
-        if(actorId) {
-          movie.actor.push(actorId)
-        }
-      }
-    }
-
-    if(updateMovieDto.genreIds) {
-        for(let i = 0; i < updateMovieDto.genreIds.length; i++) {
-          let genreId = await this.genresServer.findOne(updateMovieDto.genreIds[i])
-          if(genreId) {
-          movie.genre.push(genreId)
-        }
-      }
-    }
-
-    return this.movieRepo.save({...movie, ...updateMovieDto})
+    Object.assign(movie, updateMovieDto)
+    return this.movieRepo.save(movie)
   }
 
   async updateRating(id: number, newRating: number) {
@@ -217,6 +182,14 @@ export class MovieService {
       },
       select: {title: true, ratings: true, genre: {name: true}},
       where: {genre: {id: genreId}},
+    })
+    return movie
+  }
+
+  async newMovie() {
+    let now = new Date();
+    const movie = await this.movieRepo.find({
+      where: {yers: now.getFullYear()}
     })
     return movie
   }

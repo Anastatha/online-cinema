@@ -1,4 +1,6 @@
+import { IsString } from "class-validator"
 export class UpdateMovieDto {
+
     title: string
 
     description:string
@@ -15,7 +17,7 @@ export class UpdateMovieDto {
     
     country: string
 
-    actorIds: number []
+    //actorIds: number []
     
-    genreIds: number []
+    //genreIds: number []
 }

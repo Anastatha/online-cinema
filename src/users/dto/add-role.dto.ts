@@ -1,10 +1,10 @@
-import {IsNotEmpty, IsNumber, IsString} from "class-validator";
+import {IsNotEmpty, IsString} from "class-validator";
 
 export class AddRoleDto {
     @IsNotEmpty()
-    @IsString({message: "Must be a string"})
-    readonly value: string;
+    @IsString()
+    value: string;
 
     @IsNotEmpty()
-    readonly userId: number;
+    userId: number;
 }

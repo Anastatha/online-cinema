@@ -1,5 +1,7 @@
-export class CreateRoleDto {
-    readonly value: string
+import {IsNotEmpty, IsString} from "class-validator";
 
-    readonly description: string
+export class CreateRoleDto {
+    @IsNotEmpty()
+    @IsString()
+    value: string
 }

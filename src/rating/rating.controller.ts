@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, UseGuards} from '@nestjs/common';
 import { RatingService } from './rating.service';
 import { SetRatingDto } from './dto/set-rating.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('rating')
 export class RatingController {
@@ -11,6 +12,7 @@ export class RatingController {
     return this.ratingService.create(movieId, value)
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('/:userId')
   async setRating(@Param('userId') userId: number, @Body() setRatingDto: SetRatingDto) {
     return this.ratingService.setRating(userId, setRatingDto)

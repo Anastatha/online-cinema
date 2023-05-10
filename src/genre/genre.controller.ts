@@ -1,12 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards } from '@nestjs/common';
 import { GenreService } from './genre.service';
 import { CreateGenreDto } from './dto/create-genre.dto';
-import { Query } from '@nestjs/common/decorators';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Roles } from 'src/auth/roles-auth.decorator';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 @Controller('genre')
 export class GenreController {
   constructor(private readonly genreService: GenreService) {}
 
+  @Roles("ADMIN")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createGenreDto: CreateGenreDto) {
     return this.genreService.createGenre(createGenreDto);
@@ -17,18 +22,16 @@ export class GenreController {
     return this.genreService.getAll()
   }
 
-  @Get('/search')
-  findAll(@Query('searchTerm') searchTerm?: string) {
-    return this.genreService.findAll(searchTerm);
-  }
-
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.genreService.findOne(id);
   }
 
+  @Roles("ADMIN")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: number) {
-    return this.genreService.removeGenre(+id);
+    return this.genreService.removeGenre(id);
   }
 }
