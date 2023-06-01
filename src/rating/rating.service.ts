@@ -1,52 +1,42 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MovieService } from 'src/movie/movie.service';
 import { Repository } from 'typeorm';
-import { SetRatingDto } from './dto/set-rating.dto';
 import { RatingEntity } from './entities/rating.entity';
+import { CreateRatingDto } from './dto/create-rating.dto';
+import { MovieService } from 'src/movie/movie.service';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class RatingService { 
-  constructor(@InjectRepository(RatingEntity) private ratingRepo: Repository<RatingEntity>,
-    @Inject(forwardRef(()=>MovieService))
-    private readonly movie: MovieService
+  constructor(@InjectRepository(RatingEntity) private ratingRepo: Repository<RatingEntity>, 
+    private movieService: MovieService,
+    private userServer: UsersService
   ){}
 
-  async create(movieId: number, value: number) {
-    const reting = await this.ratingRepo.create({movieId, value})
-    return this.ratingRepo.save(reting)
-  }
-  
-  async getMovieRatingByUser(movieId: number, userId: number) {
-    return this.ratingRepo.findOne({
-      select: {value:true}, 
-      where: {movieId, userId}
-    }).then((data)=> (data ? data.value : 0))
-  }
+  async create(dto: CreateRatingDto, movieId: number, userId: number) {
+    let rating = await this.ratingRepo.findOne({
+      where: { user: {id: userId}, movie: {id: movieId} }
+    });
 
-  async setRating(userId: number, dto: SetRatingDto) {
-    const {movieId, value} = dto
-
-    const rating = await this.ratingRepo.findOne({where: {movieId}})
     if(rating) {
-      if(!rating.userId) {
-        rating.value = value
-        rating.userId = userId
-        await this.ratingRepo.save(rating)
-      } else {
-        const newRUser = await this.ratingRepo.create({userId: userId, movieId: movieId, value: value})
-        await this.ratingRepo.save(newRUser)
-      }
-      const averageRating = await this.averageRatingbyMovie(movieId)
-      await this.movie.updateRating(movieId, averageRating)
+      rating.value = dto.value
+    } else {
+      rating = await this.ratingRepo.create(dto)
+      rating.user = await this.userServer.findOne(userId) 
+      rating.movie = await this.movieService.findOne(movieId)
     }
-    
+
+    await this.ratingRepo.save(rating)
+
+    const averageRating = await this.averageRatingbyMovie(movieId)
+    await this.movieService.updateRating(movieId, averageRating)
+
     return rating
-  }
+  } 
 
   async averageRatingbyMovie(movieId: number) {
-    const rating = await this.ratingRepo.find({where: {movieId}})
+    const rating = await this.ratingRepo.find({where: {movie: {id: movieId}}})
     const newRating = Math.round(rating.reduce((acc, item) => acc + item.value, 0) / rating.length)
     return newRating
-  } 
+  }
 }

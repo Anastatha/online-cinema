@@ -9,13 +9,13 @@ export class UserEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column({name: "name", nullable: true})
+	@Column({nullable: true})
 	name: string
 
-	@Column({name: 'email', unique: true})
+	@Column({unique: true})
 	email: string;
 
-	@Column({name: 'password'})
+	@Column()
 	password: string
 
 	@CreateDateColumn({name: 'created_at'})

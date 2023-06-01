@@ -10,7 +10,7 @@ import { CommentEntity } from './entities/comment.entity';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity, MovieEntity, CommentEntity]),  forwardRef(()=> UsersModule), forwardRef(()=> MovieModule), forwardRef(() => AuthModule)],
+  imports: [TypeOrmModule.forFeature([CommentEntity]), AuthModule],
   controllers: [CommentsController],
   providers: [CommentsService],
   exports: [CommentsService]

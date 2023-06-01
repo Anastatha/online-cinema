@@ -3,13 +3,12 @@ import { RatingService } from './rating.service';
 import { RatingController } from './rating.controller';
 import { RatingEntity } from './entities/rating.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MovieEntity } from 'src/movie/entities/movie.entity';
-import { UserEntity } from 'src/users/user.entity';
 import { MovieModule } from 'src/movie/movie.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity, RatingEntity, MovieEntity]), forwardRef(()=> MovieModule), forwardRef(() => AuthModule)],
+  imports: [TypeOrmModule.forFeature([RatingEntity]), AuthModule, forwardRef(() => MovieModule), forwardRef(() => UsersModule)],
   controllers: [RatingController],
   providers: [RatingService],
   exports: [RatingService]

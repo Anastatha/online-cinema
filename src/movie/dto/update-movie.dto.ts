@@ -16,8 +16,4 @@ export class UpdateMovieDto {
     duration: number
     
     country: string
-
-    //actorIds: number []
-    
-    //genreIds: number []
 }

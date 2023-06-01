@@ -1,18 +1,12 @@
-import { Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
+import { Injectable, NotFoundException, forwardRef } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CommentEntity } from './entities/comment.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UsersService } from 'src/users/users.service';
-import { MovieService } from 'src/movie/movie.service';
 
 @Injectable()
 export class CommentsService {
-    constructor(@InjectRepository(CommentEntity) private commentRepo: Repository<CommentEntity>,
-        @Inject(forwardRef(()=> UsersService))
-        private userService: UsersService,
-        @Inject(forwardRef(()=>MovieService))
-        private movieService: MovieService
+    constructor(@InjectRepository(CommentEntity) private commentRepo: Repository<CommentEntity>
     ) {}
   async createComment(createCommentDto: CreateCommentDto) {
     const comment = await this.commentRepo.create(createCommentDto)

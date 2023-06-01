@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { MovieService } from 'src/movie/movie.service';
 import { RolesService } from 'src/roles/roles.service';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { AddRoleDto } from './dto/add-role.dto';
 import { CreateUserDto } from './dto/creat-user.dto';
 import { UpdateUserUserDto } from './dto/update-user.dto';
@@ -24,12 +24,12 @@ export class UsersService {
     }   
 
     async findAll() {
-        const users = await this.userRepo.find({relations: ['role', 'favorites']})
+        const users = await this.userRepo.find()
         return users
     }
 
     async findOne(id: number) {
-        const user = await this.userRepo.findOne({where: {id}, relations: ['role','favorites']})
+        const user = await this.userRepo.findOne({where: {id}})
         if(user) {
             return user
         }
@@ -37,7 +37,7 @@ export class UsersService {
     } 
 
     async findUserByEmail(email: string) {
-        const user = this.userRepo.findOne({where: {email}, relations: ['role', 'favorites']})
+        const user = this.userRepo.findOne({where: {email}, relations: ['role']})
         return user
     }
 

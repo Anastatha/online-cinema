@@ -14,10 +14,10 @@ export class MovieEntity {
 	title: string;
 
     @Column({default: 0})
-    ratings: number
+    general_rating: number
 
 	@Column()
-	description: string;
+	description: string
 
     @Column()
     poster: string
@@ -54,8 +54,8 @@ export class MovieEntity {
     @ManyToMany(() => UserEntity, userEntity => userEntity.favorites)
     user: UserEntity[]
 
-    @OneToOne(() => RatingEntity)
-    rating: RatingEntity
+    @OneToMany(()=>RatingEntity, ratingEntity => ratingEntity.movie)
+	rating: RatingEntity[]
 
 	@OneToMany(() => CommentEntity, commentEntity => commentEntity.movie)
     comment: CommentEntity[]

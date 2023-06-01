@@ -1,14 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Request } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Roles } from 'src/auth/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
+import { RatingService } from 'src/rating/rating.service';
+import { CreateRatingDto } from 'src/rating/dto/create-rating.dto';
 
 @Controller('movie')
 export class MovieController {
-  constructor(private readonly movieService: MovieService) {}
+  constructor(private readonly movieService: MovieService,
+    private readonly ratingService: RatingService
+    ) {}
 
   @Roles("ADMIN")
   @UseGuards(RolesGuard)
@@ -16,6 +20,13 @@ export class MovieController {
   @Post()
   create(@Body() createMovieDto: CreateMovieDto) {
     return this.movieService.create(createMovieDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/:id/rating')
+  createRating(@Request() req, @Param('id') id: number, @Body() dto: CreateRatingDto) {
+    const userId = req.user.id
+    return this.ratingService.create(dto, id, userId)
   }
 
   @Get()
@@ -31,11 +42,6 @@ export class MovieController {
     return this.movieService.totalCoundOpened()
   }
 
-  // @Post('/tran')
-  // tran(@Body() createMovieDto: CreateMovieDto) {
-  //   return this.movieService.transactionCreateMovie(createMovieDto)
-  // }
-
   @Get('/opened')
   findByOpened() {
     return this.movieService.findByOpened()
@@ -50,15 +56,20 @@ export class MovieController {
   NewMovie() {
     return this.movieService.newMovie()
   }
+
+  @Patch('/addActor/:id')
+  addActor(@Param('id') id: number, @Body('actorId') actorId: number) {
+    return this.movieService.addActor(id, actorId)
+  }
+
+  @Patch('/addGenre/:id')
+  addGenre(@Param('id') id: number, @Body("genreId") genreId: number) {
+    return this.movieService.addGenre(id, genreId)
+  }
   
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.movieService.findOne(+id);
-  }
-
-  @Get('/othetTwo/:genreId')
-  movieRatingByGenre(@Param('genreId') genreId: number) {
-    return this.movieService.movieRatingByGenre(genreId)
   }
 
   @Post('updateCountOpened/:id')

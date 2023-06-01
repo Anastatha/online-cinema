@@ -1,25 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, UseGuards} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, UseGuards, Delete, Request} from '@nestjs/common';
 import { RatingService } from './rating.service';
-import { SetRatingDto } from './dto/set-rating.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CreateRatingDto } from './dto/create-rating.dto';
 
 @Controller('rating')
 export class RatingController {
   constructor(private readonly ratingService: RatingService) {}
 
-  @Post()
-  async create(@Body() movieId: number, value: number) {
-    return this.ratingService.create(movieId, value)
-  }
+  // @Get('/user/:id')
+  // async getMovieRatingByUser(@Param('id') id: number) {
+  //   return this.ratingService.getRatingByUser(id)
+  // }
 
-  @UseGuards(JwtAuthGuard)
-  @Post('/:userId')
-  async setRating(@Param('userId') userId: number, @Body() setRatingDto: SetRatingDto) {
-    return this.ratingService.setRating(userId, setRatingDto)
-  }
-
-  @Get('/:userId/:movieId')
-  async getMovieRatingByUser(@Param('movieId') movieId: number, @Param('userId') userId: number) {
-    return this.ratingService.getMovieRatingByUser(movieId, userId)
-  }
+  // @Delete('/remove/:movieId')
+  // async removeRatingMovie(@Param('movieId') movieId: number, @Body('userId') userId: number) {
+  //   return this.ratingService.removeRatingMovie(movieId, userId)
+  // }
 }

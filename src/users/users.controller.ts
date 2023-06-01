@@ -31,6 +31,9 @@ export class UsersController {
         return this.usersService.othetThree()
     }
 
+    @Roles("ADMIN")
+    @UseGuards(RolesGuard)
+    @UseGuards(JwtAuthGuard)
     @Put('/role')
     addRole(@Body() dto: AddRoleDto) {
         return this.usersService.addRole(dto);

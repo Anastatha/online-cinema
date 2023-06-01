@@ -22,9 +22,9 @@ export class CommentEntity {
 	@UpdateDateColumn({name: 'updated_at'})
 	updatedAt: Date;
 
-	@ManyToOne(()=>UserEntity, userEntity=>userEntity.comment)
+	@ManyToOne(()=>UserEntity, userEntity => userEntity.comment)
 	user: UserEntity
 
-    @ManyToOne(()=>MovieEntity, movieEntity=>movieEntity.comment)
+    @ManyToOne(()=>MovieEntity, movieEntity => movieEntity.comment)
     movie: MovieEntity
 }

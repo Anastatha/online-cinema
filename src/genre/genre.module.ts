@@ -7,7 +7,7 @@ import { MovieEntity } from 'src/movie/entities/movie.entity';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([GenreEntity, MovieEntity]), forwardRef(() => AuthModule)],
+  imports: [TypeOrmModule.forFeature([GenreEntity]), AuthModule],
   controllers: [GenreController],
   providers: [GenreService],
   exports: [GenreService]

@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FileService } from 'src/file/file.service';
 import { Repository } from 'typeorm';
 import { CreateActorDto } from './dto/create-actor.dto';
 import { ActorEntity } from './entities/actor.entity';
@@ -16,12 +15,12 @@ export class ActorService {
   }
 
   async findAll() {
-    const actors = await this.actorRepo.find({relations: ['movie']})    
+    const actors = await this.actorRepo.find()    
     return actors;
   }
 
   async findOne(id: number) {
-    const actor = await this.actorRepo.findOne({where: {id}, relations: ['movie']})
+    const actor = await this.actorRepo.findOne({where: {id}})
     if(actor){
       return actor
     }

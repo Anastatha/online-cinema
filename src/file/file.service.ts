@@ -6,14 +6,14 @@ import { FileResponse } from './file.response.dto';
 @Injectable()
 export class FileService {
 	async saveFiles(files: Express.Multer.File[], folder: string = 'default'): Promise<FileResponse[]> {
-		const uploadFolder = `${path}/uploads/${folder}`//папка куда будем грузить
-		await ensureDir(uploadFolder)//ensureDir-проверяет существует наша папка или нет, если нет создает
+		const uploadFolder = `${path}/uploads/${folder}`
+		await ensureDir(uploadFolder)
 		
-        const res: FileResponse[] = await Promise.all(//Promise.all нежен для того что бы map был асихронным
+        const res: FileResponse[] = await Promise.all(
 			files.map(async (file) => {
-				await writeFile(`${uploadFolder}/${file.originalname}`, file.buffer)//указываем сам файл и куда будем записывать
+				await writeFile(`${uploadFolder}/${file.originalname}`, file.buffer)
 				return {
-					url: `/uploads/${folder}/${file.originalname}`,//то что получаем на фронте
+					url: `/uploads/${folder}/${file.originalname}`,
 					name: file.originalname,
 				}
 			})
@@ -21,8 +21,3 @@ export class FileService {
 		return res
 	}
 }
-
-
-// <iframe width="1901" height="808" src="https://www.youtube.com/embed/_J8tYxYB_YU" title="Vincenzo |
-// Official Trailer | Netflix" frameborder="0" allow="accelerometer; autoplay; clipboard-write; 
-//encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
